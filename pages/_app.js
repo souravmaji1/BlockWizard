@@ -11,7 +11,7 @@ const customTheme = extendTheme({
 	  Sidebar: {
 		baseStyle: {
 		  bg: '#1D2025', // Set the background color
-		  borderColor: 'rgba(255,255,255,0.08)',
+		  borderColor: '#3e424ab3',
 		  color: 'gray',
 		  // Set other styles as needed
 		},

@@ -1,4 +1,4 @@
-import { Box, Input, Button, Flex,List ,ListItem, VStack} from '@chakra-ui/react'
+import { Box, Input, Button, Flex,List ,ListItem, VStack, Heading} from '@chakra-ui/react'
 import {
   Stack,
   InputGroup,
@@ -53,51 +53,12 @@ export default function Page() {
     const [status, setStatus] = useState('Not Connected');
     const [account, setAccount] = useState('');
 
-    const [smartContractSource, setSmartContractSource] = useState('');
-    const [network, setNetwork] = useState('mumbai'); // Default to mainnet
     const [loading, setLoading] = useState(false);
-    const [contractAddress, setContractAddress] = useState('');
-  
-    const deployContract = async () => {
-      try {
-        setLoading(true);
-        // Compile the Solidity contract on the server
-        const response = await fetch('https://smartcontractx.onrender.com/smart-contract', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ contractCode: smartContractSource }),
-        });
-  
-        const data = await response.json();
-  
-        if (!response.ok) {
-          console.error(data.error);
-          return;
-        }
-  
-        // Deploy the compiled contract using MetaMask
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-  
-        // Create a contract factory using the ABI and bytecode
-        const factory = new ethers.ContractFactory(data.abi, data.bytecode, signer);
-  
-        // Deploy the contract
-        const deployedContract = await factory.deploy();
-        await deployedContract.deployed();
-  
-        setContractAddress(deployedContract.address);
-        setLoading(false);
-      } catch (error) {
-        console.error(error);
-      }
-    };
 
-   
- 
-
+  
+    const [nftcontract, setNftContract] = useState("");
+    const [tokenid, setTokenId] = useState("");
+    const [amount, setAmount] = useState('');
 
   
  //const filteredEventDetail = data.find(eventDetail => eventDetail.tokenId.toString() === tokenId);
@@ -131,7 +92,139 @@ const handleAccountsChanged = (accounts) => {
 };
 
 
+const BorrowUSDC = async () => {
+  try {
+    setLoading(true);
+  
+    
 
+    // Deploy the compiled contract using MetaMask
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+
+
+
+    const contractaddress = "0xde920135370e98d306f782479728131eb05ee28f";
+    const abi = [
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "nftContract",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tokenId",
+            "type": "uint256"
+          }
+        ],
+        "name": "stakeNFT",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "tokenId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          }
+        ],
+        "name": "borrowUSDC",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      }
+    ];
+
+    // Create a contract factory using the ABI and bytecode
+    const contract = new ethers.Contract(contractaddress, abi, signer);
+
+    // Deploy the contract
+    const call = await contract.stakeNFT(nftcontract, tokenid);
+
+    console.log(call);
+
+  
+
+    setLoading(false);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const Borrow = async () => {
+  try {
+    setLoading(true);
+  
+    
+
+    // Deploy the compiled contract using MetaMask
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+
+
+
+    const contractaddress = "0xde920135370e98d306f782479728131eb05ee28f";
+    const abi = [
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "nftContract",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tokenId",
+            "type": "uint256"
+          }
+        ],
+        "name": "stakeNFT",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "tokenId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          }
+        ],
+        "name": "borrowUSDC",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      }
+    ];
+
+    // Create a contract factory using the ABI and bytecode
+    const contract = new ethers.Contract(contractaddress, abi, signer);
+
+
+    const borrow = await contract.borrowUSDC(tokenid,amount);
+    
+
+    console.log(borrow);
+    setLoading(false);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   
  
@@ -146,7 +239,7 @@ const handleAccountsChanged = (accounts) => {
         <Navbar borderBottomWidth="1px" position="sticky" top="0"  borderColor='rgba(255,255,255,0.08)' >
           <NavbarBrand>
           <NavbarBrand>
-          <Image style={{width:"136px",marginTop:"17px",display:"flex"}} src={Mainlogo} />
+          <h1 style={{color:'white'}}>EasySol</h1> 
           </NavbarBrand>
           </NavbarBrand>
           <NavbarContent justifyContent="flex-end">
@@ -215,20 +308,10 @@ const handleAccountsChanged = (accounts) => {
               <NavItem color='gray'  href='/profile' icon={<MdEventAvailable color='gray' />}
               isActive={isNavItemActive('/profile')}
               >Deploy</NavItem>
-              <NavItem color='gray'  href='/event'  icon={<FiPlus color='gray'  />}
-              isActive={isNavItemActive('/event')}
-              >Automate</NavItem>
+             
             </NavGroup>
 
-            <NavGroup title="Contract" isCollapsible>
-            <NavItem color='gray' href='/startvoting' icon={<FaVoteYea color='gray' />}
-              isActive={isNavItemActive('/startvoting')}
-              >Create Page</NavItem>
-              <NavItem color='gray'  href='/requestvote' icon={<GiReceiveMoney color='gray' />}
-              isActive={isNavItemActive('/requestvote')}
-              >Notification</NavItem>
-            </NavGroup>
-
+           
          
 
 
@@ -244,95 +327,40 @@ const handleAccountsChanged = (accounts) => {
 
 <Box as="main" flex="1" py="2" px="4" overflowY="scroll">
 
-<Text borderColor='rgba(255,255,255,0.08)'   style={{color:'white', display: 'flex', alignItems: 'center', gap: '10px', borderBottomWidth: '1px', marginBottom: '30px', padding: '10px' }}>
-  <FaVoteYea style={{fontSize:'30px',color:'white'}} /> Contract Deployment
-</Text>
-
-<Box
-borderColor='rgba(255,255,255,0.08)'
-      style={{
-        padding: '2rem',
-        maxWidth: '66rem',
-        margin: 'auto',
-        width: '-webkit-fill-available',
-      }}
-      borderWidth="1px" 
-      borderRadius="md"
-    >
-      <div style={{ marginBottom: '1.5rem' }}>
-        <p style={{ fontSize: '20px', color: 'white', fontWeight: 'medium', marginTop: '10px', marginBottom: '15px' }}>
-          Smart Contract Source Code:
-        </p>
-        <textarea
-          rows="8"
-          
-          
-          value={smartContractSource}
-          onChange={(e) => setSmartContractSource(e.target.value)}
-          placeholder="Enter your smart contract source code here..."
-          style={{
-            width: '100%',
-            color:'white',
-            borderWidth:'2px',
-            borderRadius: '4px',
-            padding: '8px',
-            borderColor: 'rgba(255,255,255,0.08)',
-            background: 'rgba(255,255,255,0.08)',
-          }}
-        />
-      </div>
-    
-      <div style={{ marginBottom: '1.5rem' }}>
-        <p style={{ fontSize: '20px', color: 'white', fontWeight: 'medium', marginTop: '10px', marginBottom: '15px' }}>
-          Select Network:
-        </p>
-        <select
-          value={network}
-          onChange={(e) => setNetwork(e.target.value)}
-          style={{
-            width: '100%',
-            background: 'rgba(255,255,255,0.08)',
-            borderColor: 'rgba(255,255,255,0.08)',
-            borderWidth:"1px",
-            borderRadius: '4px',
-            padding: '8px',
-          }}
-        >
-          
-          <option value="mumbai" style={{color:'white'}}>Mumbai</option>
-        </select>
-      </div>
-   
-      <button
-        onClick={deployContract}
-        style={{
-          color: 'white',
-          padding: '8px 16px',
-          borderRadius: '8px',
-          fontSize: '16px',
-          width: '100%',
-          background: '#07a5b5',
-          cursor: loading ? 'not-allowed' : 'pointer',
-        }}
-        disabled={loading}
-      >
-        {loading ? 'Deploying...' : 'Deploy Contract'}
-      </button>
-      {contractAddress && (
-        <div style={{ marginTop: '1rem' }}>
-          
-          <p    style={{ color: '#ffffff', background: '#282c34', padding: '15px', borderRadius: '8px', overflowX: 'auto',fontSize: '14px', color: 'white' }} >
-            Contract Address: {contractAddress}
-          </p>
-        </div>
-      )}
-    </Box>
-
 </Box>
+<Heading style={{ color: 'white' }} >Enter Contract Address</Heading>
+<Input
+            type="text"
+            name="enter nft contract address"
+            value={nftcontract}
+            onChange={(e) => setNftContract(e.target.value)}
+            style={{ color: 'white' }}
+          />
+          <Heading style={{ color: 'white' }} >Enter TokenId</Heading>
+<Input
+            type="text"
+            style={{ color: 'white' }}
+            name="enter nft tokenid"
+            value={tokenid}
+            onChange={(e) => setTokenId(e.target.value)}
+          />
+           <Heading style={{ color: 'white' }} >Enter Amount</Heading>
+<Input
+ style={{ color: 'white' }}
+            type="text"
+            name="enter amount of usdc you want"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
+
+<Button onClick={Borrow} colorScheme="teal"  width="100%">
+          Borrow Usdc
+        </Button>
+
+       
 
 
 
-    
     </AppShell>
   )
 }

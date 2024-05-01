@@ -1,6 +1,5 @@
 'use client'
 
-import Head from 'next/head'
 import {
   Box,
   Heading,
@@ -29,7 +28,7 @@ export default function CallToActionWithAnnotation() {
             lineHeight={'110%'}>
             Launch Your Web3<br />
             <Text as={'span'} color={'#07a5b5'}>
-              Project Today
+              Project in Solana
             </Text>
           </Heading>
           <Text color={'gray.500'}>
